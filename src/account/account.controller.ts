@@ -5,4 +5,10 @@ export class AccountController {
   getUser() {
     console.log('casd');
   }
+
+  createUser() {
+
+  }
+
+  
 }
