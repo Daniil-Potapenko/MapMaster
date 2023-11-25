@@ -9,12 +9,12 @@ export class AccountController {
 
   }
 
-  @Get()
+  @Get('a/')
   async getMe() {
     console.log('casd');
   }
 
-  @Post()
+  @Post('user/')
   async registration(@Body() createUserDto: createUserDto){
       this.AccountService.createUser(createUserDto)
     }
