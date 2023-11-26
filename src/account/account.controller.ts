@@ -5,14 +5,7 @@ import { createUserDto } from './dto/create.user.dto';
 
 @Controller('account')
 export class AccountController {
-  constructor(private AccountService: AccountService){
-
-  }
-
-  @Get('a/')
-  async getMe() {
-    console.log('casd');
-  }
+  constructor(private AccountService: AccountService){}
 
   @Post('user/')
   async registration(@Body() createUserDto: createUserDto){
