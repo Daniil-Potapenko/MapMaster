@@ -1,7 +1,7 @@
-import { BadRequestException, Injectable, Ip, ValidationPipe } from '@nestjs/common';
+import { Injectable, ValidationPipe } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { createUserDto } from './dto/create.user.dto';
 import * as bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -24,24 +24,38 @@ export class AccountService {
     return createdUser.save();
   } 
 
+  async findUser(identificator:{id?:ObjectId, email?:string}){
 
-  async login(loginUserDto:loginUserDto){
+    const  user = await this.userModel.findById(identificator.id)
+    return user; 
+  }
 
-    const user = await this.userModel.find({"email":loginUserDto.email})
-    console.log(user + "user")
-    return "user"
-    // await bcrypt.compare(loginUserDto.password, user.passwordHash)
-    }
-  
 
   async checkAuth(){
 
+
+  }
+
+  async validateUserCredentials(){
+    const user = this.findUser
   }
 
   getAccessToken(){
 
   }
+
   getRefreshToken(){
-    
+  
   }
+
+
+    
+  // async login(loginUserDto:loginUserDto){
+
+  //   const user = await this.userModel.find({"email":loginUserDto.email})
+  //   console.log(user + "user")
+  //   return user
+  //   // await bcrypt.compare(loginUserDto.password, user.passwordHash)
+  //   }
+  
 }

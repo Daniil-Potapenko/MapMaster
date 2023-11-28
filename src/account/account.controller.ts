@@ -8,14 +8,20 @@ import { loginUserDto } from './dto/login.user.dto';
 export class AccountController {
   constructor(private AccountService: AccountService){}
 
+  @Get('user/')
+  async getUser(@Body() identificator){
+      return this.AccountService.findUser(identificator)
+    }
+  
   @UsePipes(new ValidationPipe())
   @Post('user/')
   async registration(@Body() createUserDto: createUserDto){
       this.AccountService.createUser(createUserDto)
     }
   
-  @Post('login/')
-  async login(@Body() loginUserDto:loginUserDto){
-    this.AccountService.login(loginUserDto)
-  }
+  // @Post('login/')
+  // async login(@Body() loginUserDto:loginUserDto){
+  //   return this.AccountService.login(loginUserDto)
+  // }
+  
 }
