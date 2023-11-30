@@ -5,5 +5,5 @@ export class IUser{
   firstName:string;
   lastName:string;
   email:string;
-  passwordHash:string;
+  passwordHash?:string;
 }

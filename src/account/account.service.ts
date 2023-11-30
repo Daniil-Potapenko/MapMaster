@@ -6,47 +6,45 @@ import { createUserDto } from './dto/create.user.dto';
 import * as bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { loginUserDto } from './dto/login.user.dto';
+import { userEntity } from './user/user.entity';
+import { IUser } from './user/user.interface';
 
 @Injectable()
 export class AccountService {
   constructor(@InjectModel(User.name) private userModel: Model<User>){}
 
-  async createUser(createUserDto: createUserDto): Promise<User> {
+  async createUser({firstName,lastName,email,password}: createUserDto): Promise<User> {
     
-    const passwordHash = await bcrypt.hash(createUserDto.password, Number(process.env.BCRYPT_SALT_ROUNDS));
-    let createdUser = new this.userModel({
-      email:createUserDto.email,
-      lastName:createUserDto.lastName,
-      firstName:createUserDto.firstName,
-      passwordHash:passwordHash,
-    });
-
-    return createdUser.save();
+    const newUserEntity = await new userEntity({
+      firstName,
+      lastName,
+      email
+    }).setPassword(password)
+    const newUser = new this.userModel(newUserEntity)
+    newUser.save()
+    
+    return newUser.id;
   } 
 
-  async findUser(identificator:{id?:ObjectId, email?:string}){
-
-    const  user = await this.userModel.findById(identificator.id)
+  async findUser(identificator:{id?:ObjectId,email?:string}){
+    let user={}
+    if(identificator.id){
+      user = await this.userModel.findById(identificator.id).exec()
+    }
+    if(identificator.email){
+      user = await this.userModel.find({}).exec()
+    }
+      
     return user; 
   }
 
 
-  async checkAuth(){
-
-
-  }
 
   async validateUserCredentials(){
     const user = this.findUser
   }
 
-  getAccessToken(){
 
-  }
-
-  getRefreshToken(){
-  
-  }
 
 
     

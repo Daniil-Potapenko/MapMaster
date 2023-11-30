@@ -2,7 +2,7 @@ import { ObjectId } from "mongoose";
 import { IUser } from "./user.interface";
 import { compare, hash } from "bcrypt";
 
-export class uesrEntity implements IUser {
+export class userEntity implements IUser {
   _id?:ObjectId;
   firstName:string;
   lastName:string;
@@ -10,15 +10,13 @@ export class uesrEntity implements IUser {
   passwordHash:string;
 
   constructor(user: IUser){
-    this._id=user._id;
     this.email=user.email;
     this.firstName=user.firstName;
     this.lastName=user.lastName;
-    this.firstName=user.firstName;
   }
 
   public async setPassword(password:string){
-    this.passwordHash = await hash(password, process.env.BCRYPT_SALT_ROUNDS)
+    this.passwordHash = await hash(password, Number(process.env.BCRYPT_SALT_ROUNDS))
     return this
   }
 
