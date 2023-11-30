@@ -2,15 +2,17 @@ import { Body, Controller, Get, Post, UsePipes, ValidationPipe} from '@nestjs/co
 import { AccountService } from './account.service';
 import { createUserDto } from './dto/create.user.dto';
 import { loginUserDto } from './dto/login.user.dto';
+import { findUserDto } from './dto/find.user.dto';
 
 
 @Controller('account')
 export class AccountController {
   constructor(private AccountService: AccountService){}
 
+  @UsePipes(new ValidationPipe())
   @Get('user')
-  async getUser(@Body() identificator){
-      return this.AccountService.findUser(identificator)
+  async getUser(@Body() dto:findUserDto){
+      return this.AccountService.findUser(dto)
     }
   
   @UsePipes(new ValidationPipe())

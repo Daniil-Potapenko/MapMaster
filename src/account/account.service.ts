@@ -32,9 +32,9 @@ export class AccountService {
       user = await this.userModel.findById(identificator.id).exec()
     }
     if(identificator.email){
-      user = await this.userModel.find({}).exec()
+      user = await this.userModel.find({email:identificator.email}).exec()
     }
-      
+    
     return user; 
   }
 
@@ -45,9 +45,6 @@ export class AccountService {
   }
 
 
-
-
-    
   // async login(loginUserDto:loginUserDto){
 
   //   const user = await this.userModel.find({"email":loginUserDto.email})
