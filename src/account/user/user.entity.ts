@@ -1,6 +1,8 @@
 import { ObjectId } from "mongoose";
 import { IUser } from "./user.interface";
 import { compare, hash } from "bcrypt";
+ 
+
 
 export class userEntity implements IUser {
   _id?:ObjectId;
@@ -13,6 +15,7 @@ export class userEntity implements IUser {
     this.email=user.email;
     this.firstName=user.firstName;
     this.lastName=user.lastName;
+    this.passwordHash=user.passwordHash;
   }
 
   public async setPassword(password:string){
@@ -20,8 +23,8 @@ export class userEntity implements IUser {
     return this
   }
 
-  public validatePassword(password:string){
-    return compare(password, this.passwordHash)
+  public async validatePassword(password:string){
+    return await compare(password, this.passwordHash)
   }
 
   public getPublicProfile() {
@@ -41,4 +44,5 @@ export class userEntity implements IUser {
     this.firstName=firstName
     return this
   }
+
 }

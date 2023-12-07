@@ -1,13 +1,13 @@
 import { Injectable, ValidationPipe } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
-import { Model, ObjectId } from 'mongoose';
-import { createUserDto } from './dto/create.user.dto';
-import * as bcrypt from 'bcrypt';
+import { Model } from 'mongoose';
 import jwt from 'jsonwebtoken';
-import { loginUserDto } from './dto/login.user.dto';
+import { createUserDto } from './dto/create.user.dto'
+import { findUserDto } from './dto/find.user.dto';
 import { userEntity } from './user/user.entity';
 import { IUser } from './user/user.interface';
+
 
 @Injectable()
 export class AccountService {
@@ -26,23 +26,54 @@ export class AccountService {
     return newUser.id;
   } 
 
-  async findUser(identificator:{id?:ObjectId,email?:string}){
-    let user={}
+  async findUser(identificator:findUserDto){
+
     if(identificator.id){
-      user = await this.userModel.findById(identificator.id).exec()
+      return await this.userModel.findById(identificator.id).exec()
     }
     if(identificator.email){
-      user = await this.userModel.find({email:identificator.email}).exec()
+      return await this.userModel.findOne({email:identificator.email}).exec()
+    }
+  }
+
+  /**
+   * Check email adress in database
+   * @param email
+   * @returns 
+   * true - if email not found in db
+   * false if email exist in db
+   */
+  async checkEmail(email:string){
+    const emailExist = this.userModel.findOne({email}).exec()
+    if(emailExist){
+      return false
+    }
+    else return true
+  }
+
+  async validateUserCredentials(email:string,password:string){
+    const {_id, ...user} = await this.findUser({email})
+    
+    if(user!){
+      return "false 1"
     }
     
-    return user; 
+    const newUserEntiy =  new userEntity(user)
+    let credentialIsCorrect = await newUserEntiy.validatePassword(password)
+
+    return credentialIsCorrect
   }
 
-
-
-  async validateUserCredentials(){
-    const user = this.findUser
-  }
+  // async validateUserCredentials(email:string,password:string){
+  //   const user  = await this.findUser({email})
+  //   if(user!){
+  //     return false
+  //   }
+  //   const {_id, ...userData} = user;
+  //   const newUserEntiy = new userEntity(userData)
+  //   const credentialIsCorrect= await newUserEntiy.validatePassword(password)
+  //   return credentialIsCorrect
+  // }
 
 
   // async login(loginUserDto:loginUserDto){
@@ -54,3 +85,4 @@ export class AccountService {
   //   }
   
 }
+

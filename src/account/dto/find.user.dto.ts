@@ -1,9 +1,13 @@
-import { IsEmail } from "class-validator";
+import { IsEmail,IsMongoId,IsOptional} from "class-validator";
 import { ObjectId } from "mongoose";
 
 export class findUserDto {
 
   @IsEmail()
-  readonly email: string;
-  readonly id: ObjectId;
+  @IsOptional()
+  readonly email?: string;
+  @IsMongoId()
+  @IsOptional()
+  readonly id?: ObjectId;
+  
 }

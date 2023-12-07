@@ -1,7 +1,6 @@
 import { Body, Controller, Get, Post, UsePipes, ValidationPipe} from '@nestjs/common';
 import { AccountService } from './account.service';
 import { createUserDto } from './dto/create.user.dto';
-import { loginUserDto } from './dto/login.user.dto';
 import { findUserDto } from './dto/find.user.dto';
 
 
@@ -21,6 +20,12 @@ export class AccountController {
       return this.AccountService.createUser(dto)
     }
   
+  @Post('check')
+  async  validate(@Body() dto:{email:string,password:string}) {
+    return this.AccountService.validateUserCredentials(dto.email,dto.password)
+  }
+
+
   // @Post('login/')
   // async login(@Body() loginUserDto:loginUserDto){
   //   return this.AccountService.login(loginUserDto)
