@@ -1,23 +1,26 @@
-import { Prop } from "@nestjs/mongoose";
-import { IsEmail, IsString, IsStrongPassword, Length } from "class-validator";
+import { IsEmail, IsStrongPassword, Length } from "class-validator";
 
 export class createUserDto{
 
-  @Prop()
   @IsEmail()
-  email:string;
+    email:string;
 
-  @Prop()
   @Length(2,30)
-  firstName:string;
+    firstName:string;
 
-  @Prop()
   @Length(2,30)
-  lastName:string;
+    lastName:string;
 
-  @Prop()
   @IsStrongPassword({
     minLength:6
   })
-  password:string;
+    password:string;
+
+}
+
+export class findUserDto{
+
+  @IsEmail()
+    email:string;
+
 }

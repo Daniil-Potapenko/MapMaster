@@ -1,17 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, ObjectId } from 'mongoose';
-import { User, UserDocument } from 'src/user/schema/user.schema';
+import { Model } from 'mongoose';
+import { User } from 'src/user/schema/user.schema';
+import { createUserDto, findUserDto } from './entity/user.dto';
 import { userEntity } from './entity/user.entity';
-import { createUserDto } from './entity/user.dto';
-import { UserModule } from './user.module';
-import { IUser } from './entity/user.interface';
+
 
 @Injectable()
 export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<User>){}
 
-  async createUser({email,firstName,lastName,password}: createUserDto): Promise<User> {
+
+  async createUser({email,firstName,lastName,password}: createUserDto): Promise<User|false> {
+    const userExist = await this.findUser({email})
+    if(userExist){
+      return false
+    }
+
     const newUserEntity = new userEntity({
       email,
       firstName,
@@ -19,9 +24,7 @@ export class UserService {
     }).setPassword(password)
 
   const createdUser = await new this.userModel(userEntity).save()
-
   return createdUser.id
-
   }
 
   deleteUser(){
@@ -32,8 +35,9 @@ export class UserService {
 
   }
 
-  async findUser(email:string):Promise<User|false>{
+  async findUser({email}:findUserDto):Promise<User|false>{
     const user = await this.userModel.findOne({email})
+    
     if(user){
       return user
     }
