@@ -17,14 +17,24 @@ export class UserService {
       return false
     }
 
-    const newUserEntity = new userEntity({
+    const newUserEntity = await new userEntity({
       email,
       firstName,
       lastName
     }).setPassword(password)
 
-  const createdUser = await new this.userModel(userEntity).save()
+  const createdUser = await new this.userModel(newUserEntity).save()
   return createdUser.id
+  }
+
+ async findUser({email}:findUserDto):Promise<User|false>{
+    const user = await this.userModel.findOne({email})
+    
+    if(user){
+      return user
+    }
+    else return false
+
   }
 
   deleteUser(){
@@ -35,14 +45,6 @@ export class UserService {
 
   }
 
-  async findUser({email}:findUserDto):Promise<User|false>{
-    const user = await this.userModel.findOne({email})
-    
-    if(user){
-      return user
-    }
-    else return false
-
-  }
+ 
   
 }
