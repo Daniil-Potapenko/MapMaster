@@ -1,20 +1,32 @@
-import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post, Query, ValidationPipe } from '@nestjs/common';
 import { UserService } from './user.service';
-import { createUserDto, findUserDto } from './entity/user.dto';
+import { createUserDto, findUserDto, updateUserDto } from './entity/user.dto';
 
 
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Post('find')
-  async findUserByEmail(@Body(new ValidationPipe) dto: findUserDto){
-    return this.userService.findUser(dto)
+  @Get()
+  async findUserByEmail(@Query(new ValidationPipe) dto: findUserDto){
+    return this.userService.findUserByEmail(dto)
   }
 
-  @Post('create')
+  @Post()
   async createNewUser(@Body(new ValidationPipe) dto: createUserDto){
     return this.userService.createUser(dto)
   }
+
+  @Delete()
+  async deleteExistUser(@Body() dto:findUserDto){
+    return this.userService.deleteUser(dto)
+  }
+
+
+  @Patch()
+  async updateUserInfo(@Body() dto:updateUserDto){
+    return this.userService.updateUser(dto)
+  }
+
 }
 
