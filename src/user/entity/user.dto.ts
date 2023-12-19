@@ -1,4 +1,4 @@
-import { IsEmail, IsMongoId, IsOptional, IsStrongPassword, Length } from "class-validator";
+import { IsEmail, IsMongoId, IsStrongPassword, Length } from "class-validator";
 import { ObjectId } from "mongoose";
 
 export class createUserDto{

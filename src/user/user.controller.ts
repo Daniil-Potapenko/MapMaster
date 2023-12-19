@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Patch, Post, Query, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post, ValidationPipe } from '@nestjs/common';
 import { UserService } from './user.service';
 import { createUserDto, findUserDto, updateUserDto } from './entity/user.dto';
 

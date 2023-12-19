@@ -1,19 +1,14 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
 import { UserRepository } from './user.repository';
-import { Model } from 'mongoose';
 import { User } from 'src/user/schema/user.schema';
-import { createUserDto, findUserDto, updateUserDto } from './entity/user.dto';
+import { createUserDto, updateUserDto } from './entity/user.dto';
 import { userEntity } from './entity/user.entity';
 
 
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectModel(User.name) private userModel: Model<User>,  //delete//
-    private readonly UserRepository: UserRepository
-  ){}
+  constructor(private readonly UserRepository: UserRepository){}
 
   private async emailExist(email:string):Promise<boolean>{
     const emailExist = await this.UserRepository.findUser(email)
@@ -43,7 +38,6 @@ export class UserService {
 
 
   async getPublicAccountData(email:string){
-
 
   }
 
