@@ -1,4 +1,4 @@
-import { IsEmail, IsMongoId, IsOptional, IsStrongPassword, Length } from "class-validator";
+import { IsEmail, IsMongoId, IsStrongPassword, Length } from "class-validator";
 import { ObjectId } from "mongoose";
 
 export class createUserDto{
@@ -28,7 +28,7 @@ export class findUserDto{
 export class updateUserDto{
 
   @IsMongoId()
-    id:ObjectId
+    _id:ObjectId
 
   @IsEmail()
     email?:string;
@@ -39,9 +39,7 @@ export class updateUserDto{
   @Length(2,30)
     lastName?:string;
 
-  @IsStrongPassword({
-    minLength:6
-  })
+  @IsStrongPassword({ minLength:6 })
     password?:string;
 
 }

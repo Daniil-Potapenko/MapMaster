@@ -1,18 +1,17 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { UserRepository } from './user.repository';
 import { User } from 'src/user/schema/user.schema';
-import { createUserDto, findUserDto, updateUserDto } from './entity/user.dto';
+import { createUserDto, updateUserDto } from './entity/user.dto';
 import { userEntity } from './entity/user.entity';
 
 
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>){}
+  constructor(private readonly UserRepository: UserRepository){}
 
-  private async emailExist(email:findUserDto):Promise<boolean>{
-    const emailExist = await this.userModel.findOne({email}).exec()
+  private async emailExist(email:string):Promise<boolean>{
+    const emailExist = await this.UserRepository.findUser(email)
 
     if(emailExist){
       return true
@@ -21,10 +20,9 @@ export class UserService {
     
   }
 
+  async createAccount({email,firstName,lastName,password}: createUserDto): Promise<User|HttpException> {
 
-  async createUser({email,firstName,lastName,password}: createUserDto): Promise<User|HttpException> {
-
-    if(this.emailExist({email})){
+    if(this.emailExist(email)){
       return  new HttpException('Email already exist', HttpStatus.BAD_REQUEST);
     }
 
@@ -34,31 +32,18 @@ export class UserService {
       lastName
     }).setPassword(password)
 
-  const createdUser = await new this.userModel(newUserEntity).save()
+  const createdUser = await this.UserRepository.createUser(newUserEntity)
   return createdUser.id
   }
 
 
- async findUserByEmail({email}:findUserDto):Promise<User|HttpException>{
-    const user = await this.userModel.findOne({email}).exec()
+  async getPublicAccountData(email:string){
 
-    if(user){
-      return user
-    }
-    else return new HttpException('Not found', HttpStatus.NOT_FOUND)
   }
 
-  async findUserById({id}:updateUserDto):Promise<User|HttpException>{
-    const user = await this.userModel.findById(id).exec()
+  async deleteAccount(email:string):Promise<HttpException>{
 
-    if(user){
-      return user
-    }
-    else return new HttpException('Not found', HttpStatus.NOT_FOUND)
-  }
-
-  async deleteUser({email}:findUserDto):Promise<HttpException>{
-    const deletedUser = await this.userModel.findOneAndDelete({email}).exec()
+    const deletedUser = await this.UserRepository.deleteUser(email)
     if(deletedUser){
       return new HttpException('User delete', HttpStatus.OK)
     }
@@ -66,10 +51,10 @@ export class UserService {
 
   }
 
-  async updateUser(dto:updateUserDto):Promise<User|HttpException>{
+  async updateAccount(dto:updateUserDto):Promise<User|HttpException>{
     try{
-      const {id,password, ...data} = dto;
-      return await this.userModel.findOneAndUpdate({_id:id},data).exec()
+      const {password, ...data} = dto;
+      return await this.UserRepository.updateUser(data)
     }
     catch(e){
       console.log(e)
@@ -78,3 +63,7 @@ export class UserService {
   }
 
 }
+
+
+
+
